@@ -1,0 +1,170 @@
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme"
+import { light as colors } from "./constants"
+
+export default createMuiTheme({
+  overrides: {
+    MuiListItemText: {
+      primary: {
+        color: colors.secondary,
+      },
+    },
+    MuiListItem: {
+      root: {
+        "&$selected, &$selected:hover": {
+          backgroundColor: colors.info,
+          disableRipple: true,
+        },
+      },
+    },
+    MuiCssBaseline: {
+      "@global": {
+        [`.navbar-item .navbar-item__img svg g,
+          .navbar-item .navbar-item__img svg defs,
+          .navbar-item .navbar-item__img svg path,
+          .navbar-item .navbar-item__img img g,
+          .navbar-item .navbar-item__img img defs,
+          .navbar-item .navbar-item__img img path`]: {
+          fill: colors.secondary,
+        },
+        ".inner-content": {
+          boxShadow: `0px 0px 20px ${colors.shadowContent}`,
+        },
+        ".box-shadow-outer": {
+          boxShadow: `0px 0px 20px ${colors.shadowContent}`,
+        },
+        ".text-field__label, .ui-label": {
+          color: colors.secondary,
+        },
+        ".label": {
+          color: colors.primary,
+        },
+        "textarea": {
+          marginTop: "0",
+            position: "relative",
+            border: "solid 1px " + colors.border,
+            borderRadius: "3px",
+            width: "100%",
+            resize: "none",
+            padding: "0.5rem",
+            color: colors.secondary,
+            "&:focus": {
+            outline: "none",
+              border: "solid 1px " + colors.borderHover,
+              boxShadow: `0 0 0 2px ${colors.shadow}`,
+          },
+          "&:hover": {
+            outline: "none",
+              border: "solid 1px " + colors.borderHover,
+              boxShadow: `0 0 0 2px ${colors.shadow}`,
+          }
+        },
+      },
+    },
+  },
+  palette: {
+    primary: {
+      main: colors.primary,
+      light: colors.primaryLight,
+      contrastText: colors.black,
+      dark: colors.primary
+    },
+    secondary: {
+      main: colors.secondary,
+      dark: colors.secondary
+    },
+    info: {
+      main: colors.info,
+      light: colors.infoLight,
+      contrastText: colors.primary,
+    },
+    background: {
+      default: colors.background,
+    },
+    common: {
+      default: colors.white,
+      white: colors.white,
+    },
+    borders: {
+      controls: {
+        input: {
+          main: colors.border,
+          hover: colors.borderHover,
+        },
+        button: {
+          main: colors.border,
+          hover: colors.borderHoverButton,
+        },
+        dropdown: {
+          main: colors.border,
+          hover: colors.borderHover,
+          error: colors.borderError,
+        },
+        table: {
+          main: colors.borderTable,
+        },
+        pagination: {
+          selected: colors.borderPagination,
+        },
+      },
+    },
+    shadows: {
+      controls: {
+        input: `0 0 0 2px ${colors.shadow}`,
+        button: `0 0 0 2px ${colors.shadowButton}`,
+        dropdown: `0 0 0 2px ${colors.shadow}`,
+        dropdownMenu: `0 1px 4px ${colors.shadowPopup}`,
+        datepicker: `0 1px 6px ${colors.shadowPopup}`,
+      },
+      error: `0 0 0 2px ${colors.shadowError}`,
+    },
+    options: {
+      input: {
+        label: colors.placeholder,
+        placeholder: colors.placeholder,
+        dirty: colors.dirtyInput,
+      },
+      icon: {
+        success: colors.success,
+        error: colors.error,
+        default: colors.default,
+        hide: colors.hide,
+      },
+      dropdown: {
+        hoverOption: colors.dropdownHover,
+        activeOption: colors.dropdownActive,
+        multi: colors.primary30,
+        multiHover: colors.primary50,
+      },
+      table: {
+        headerCell: colors.cellHeader,
+        hoverCell: colors.cellHover,
+        hoverRow: colors.rowHover,
+      },
+      pagination: {
+        hover: colors.paginationHover,
+        hoverActive: colors.paginationHoverActive,
+      },
+      tooltip: {
+        background: colors.tooltip,
+      },
+      datepicker: {
+        dayColor: colors.datepicker,
+        hover: colors.datepickerHover,
+      },
+      backDrop: {
+        background: colors.backdrop,
+      },
+    },
+  },
+  props: {
+    MuiButtonBase: {
+      disableRipple: true,
+    },
+
+    MuiButton: {
+      disableRipple: true,
+      disableTouchRipple: true,
+      disableFocusRipple: false,
+    },
+  },
+})

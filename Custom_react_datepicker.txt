@@ -1,0 +1,131 @@
+import React, { useEffect, useState, forwardRef } from "react"
+import { useSelector } from "react-redux"
+import { selectLocale } from "../../../app/UserSettings/UserSettings.selectors"
+import ru from "date-fns/locale/ru"
+import DatePicker, { registerLocale, getDefaultLocale } from "react-datepicker"
+import { Input } from "../"
+import useStyles from "./useStyles"
+import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined"
+import "react-datepicker/dist/react-datepicker.css"
+import MonthlyDatePicker from "./Monthly"
+import YearlyDatePicker from "./Yearly"
+import moment from "moment"
+import classNames from "classnames";
+import { useIntl } from "react-intl"
+import messages from "../../../libs/modules/messages"
+
+const getCurrentLocale = (locale) => {
+  switch (locale) {
+    case "ru":
+      registerLocale(locale, ru)
+      break
+    default:
+      getDefaultLocale("en")
+      break
+  }
+}
+
+const CustomInput = forwardRef(({ value, onChange, onClick, needShowErrors, placeholderText, inputClassName }, ref) => {
+  return (
+    <Input
+      value={value}
+      onChange={onChange}
+      onClick={onClick}
+      needShowErrors={needShowErrors}
+      isLabelUp={false}
+      label={placeholderText}
+      className={inputClassName}
+      iconRight={<CalendarTodayOutlinedIcon onClick={onClick} fontSize="small" />}
+    />
+)})
+
+const dateIsSelected = (date, dates) => {
+  return (dates || []).indexOf(date) !== -1
+}
+
+const DefaultDatePicker = (props) => {
+  const {datepicker} = useStyles()
+  const locale = useSelector(selectLocale)
+  useEffect(() => getCurrentLocale(locale), [])
+  
+  return <DatePicker popperClassName={datepicker} locale={locale} {...props} customInput={
+    <CustomInput value={props.value} className={props.inputClassName} placeholderText={props.placeholderText} />
+  } />
+}
+
+const MultipleDatePicker = (props) => {
+  const {datepicker, selectedDateDay, unSelectedDateDay} = useStyles()
+  const locale = useSelector(selectLocale)
+  const [value, setValue] = useState( props.selected || [])
+  const intl = useIntl()
+  useEffect(() => {
+    getCurrentLocale(locale)
+    if (props.value) setValue(moment(props.value).format(props.momentFormat))
+  }, [])
+  
+  useEffect(()=> {
+    props.onSelect && props.onSelect(value)
+  }, [value])
+  const renderDayContents = (day, date) => {
+    
+    return (
+      <span
+        className={classNames({
+          [selectedDateDay]: dateIsSelected(moment(date).format(props.momentFormat), value),
+          [unSelectedDateDay]: !dateIsSelected(moment(date).format(props.momentFormat), value),
+        })}
+      >{day}
+      </span>
+    )
+  };
+  
+  const onChange = (date) => {
+    const formatedDate = moment(date).format(props.momentFormat)
+    let dates = []
+  
+    if (dateIsSelected(formatedDate, value)) {
+      dates = [...(value || []).filter(item => item !== formatedDate)]
+    } else {
+      dates = [...(value || []), formatedDate]
+    }
+    setValue([...dates])
+  }
+  
+  return (
+    <DatePicker
+      onChange={onChange}
+      popperClassName={datepicker}
+      locale={locale}
+      shouldCloseOnSelect={false}
+      renderDayContents={renderDayContents}
+      customInput={
+        <CustomInput 
+          value={props.selected.join(', ')} 
+          className={props.inputClassName}
+          placeholderText={`${intl.formatMessage(messages.selected)}: ${props.selected.length}`}
+        />
+      } 
+    />
+  )
+}
+
+const Picker = (props) => {
+  if (props.kind === "multiple") {
+    return <MultipleDatePicker {...props} />
+  } else if (props.kind === "monthly") {
+    return <MonthlyDatePicker {...props} />
+  } else if (props.kind === "yearly") {
+    return <YearlyDatePicker {...props} />
+  }
+  
+  return <DefaultDatePicker {...props} />
+}
+
+
+
+Picker.defaultProps = {
+  dateFormat: "dd-MM-yyyy",
+  momentFormat: "D-MM-Y"
+}
+
+export default Picker
